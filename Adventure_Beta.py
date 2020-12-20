@@ -1,3 +1,11 @@
+"""
+Author: Brandon James Curl
+Contact: brandoncurl@utexas.edu
+Date: 20-Dec-2020
+Version: 2.0
+"""
+
+
 from sys import exit
 from math import ceil
 from random import randint
@@ -146,6 +154,7 @@ def fight(creature):
         damage = ceil((90/player['life_points'])*(creature['item_level']/player['item_level'])*creature['difficulty']/2)
         player['life_points'] -= damage
         print(f"Congratulations! You have beaten {creature['name']}, but have suffered {damage} damage.")
+        input()
         return True
 
     else:
@@ -154,16 +163,19 @@ def fight(creature):
 def beat(creature):
     global player
     print(f"You loot {creature['gold_loot']} gold.")
+    input()
     player['gold'] += creature['gold_loot']
 
     if creature['loot']:
         for i in creature['loot']:
             loot(i)
+            input()
 
 def lose(creature):
     global player
     damage = ceil((90/player['life_points'])*(creature['item_level']/player['item_level'])*creature['difficulty'])
     print(f"You have lost to the {creature['name']} and have sustained {damage} damage.")
+    input()
     player['life_points'] -= damage
 
     check_death(creature['death statement'])
@@ -212,6 +224,7 @@ def cave():
 
     elif 'flee' in choice:
         print("As you run away, you sustain 5 damage.")
+        input()
         player['life_points'] -= 5
 
     else:
@@ -230,6 +243,7 @@ def husband():
 
     elif 'flee' in choice:
         print("As you run away, you sustain 5 damage.")
+        input()
         player['life_points'] -= 5
 
     else:
@@ -255,11 +269,13 @@ def prison():
 
             if 'report' in choice:
                 print("The officers of the prison thank you greatly for your service. They award you 200 gold and allow you to take the loot from the alpha prisoner.")
+                input()
                 player['gold'] += 200
                 beat(alpha)
 
             elif 'extort' in choice:
                 print("The guard gives you 20 gold and his silver armour to keep you quiet.")
+                input()
                 player['gold'] += 20
                 loot('silver')
 
@@ -277,11 +293,13 @@ def witch():
 
     if 'seduce' in choice:
         print("The witch gives it a shot, but apparently, you were not good at all. She is very dissatisfied and curses you with a hex. This puts your life points at 1.")
+        input()
         player['life_points'] = 1
 
     elif 'drink' in choice or 'potion' in choice:
         if first_drink:
             print("You hesitantly drink the potion, but nothing happens. Frustrated, the witch works on a new potion but pays you 700 gold for partaking in her clinical trial.")
+            input()
             player['gold'] += 700
             first_drink = False
 
@@ -290,9 +308,9 @@ def witch():
             check_death("\"Ahh, I see you've come back for a second drink,\" the witch exclaims. She confidently pours the potion down your throat, and you begin hallucinating. When you come to, you are in the underworld. Apparetly, she fixed her potion.")
 
     elif 'fight' in choice:
-        witch = {'name': 'witch', 'item_level': 60, 'life_points': 70, 'gold_loot': 80, 'loot': ['gold', 'sword'], 'difficulty': 40, 'death statement': "The witch reaches her hand into your chest and pulls out your beating heart. Well, at least it WAS beating."}
-        if fight(witch):
-            beat(witch)
+        witch_2 = {'name': 'witch', 'item_level': 60, 'life_points': 70, 'gold_loot': 80, 'loot': ['gold', 'sword'], 'difficulty': 40, 'death statement': "The witch reaches her hand into your chest and pulls out your beating heart. Well, at least it WAS beating."}
+        if fight(witch_2):
+            beat(witch_2)
 
     else:
         print("I didn't quite get that.")
@@ -305,14 +323,14 @@ def dungeon():
     input()
 
     if fight(dragon):
-        print("After beating the dragon, you can either loot it or wipe off a nearby dusty egg.")
+        print("After beating the dragon, you can either loot it or wipe off one of the nearby dusty eggs.")
         choice = input('> ')
 
         if 'loot' in choice or 'dragon' in choice:
             beat(dragon)
 
         elif 'wipe' in choice or 'egg' in choice:
-            print("After wiping off the dust, the egg shines like gold. It must be worth a hefty sum. Do you want to keep it or crack it open?")
+            print("You choose an egg at random and after wiping off the dust, it shines like gold. It must be worth a hefty sum. Do you want to keep it or crack it open?")
             choice = input('> ')
 
             if 'crack' in choice or 'open' in choice:
@@ -322,7 +340,8 @@ def dungeon():
                     input()
                     loot('glock')
                 else:
-                    print('You crack the egg open, but nothing is inside! What a waste.')
+                    print('You crack the egg open, but nothing is inside! Better luck next time.')
+                    input()
 
             elif 'keep' in choice:
                 loot('golden egg')
@@ -335,12 +354,13 @@ def dungeon():
 
 def king():
     global player
-    print("You have been summoned by King Varian Wrynn for a private audience. The King thanks you for your service to the land as you have quickly become his best champion.\nThe old man looks frail and weak, so you question why he should reign and not someone younger, someone more in touch with the people.\nWould you like to swear allegiance to King Varian or fight him?")
+    print("You have been summoned by King Varian Wrynn for a private audience. The King thanks you for your service to the land as you have quickly become his best champion.\nThe old man looks frail and weak, so you question why he should reign and not someone younger, someone more in touch with the people.\nWould you like to swear allegiance to King Varian, fight him, or return on your conquest?\nNOTE: the game will end one way or another if you do not return.")
     choice = input('> ')
 
     if 'swear' in choice or 'all' in choice:
         print("Becuase of your unwavering dedication to the throne, King Varian has decided to grant you Knighthood.")
         print(f"People from all over Azeroth gather in your honor as you are named Knight {player['name']}, Hero of the Land.")
+        input()
         exit(0)
 
     elif 'fight' in choice:
@@ -351,6 +371,10 @@ def king():
             input()
             report()
             exit(0)
+
+    elif 'return' in choice:
+        print("You have graciously declined his Majesty's offer and return to your home in Goldshire.")
+        input()
 
     else:
         print("I didn't quite understand.")
@@ -402,18 +426,23 @@ def buy():
             if player['gold'] >= items['food'][1] * choice:
                 player['food'] += choice
                 player['gold'] -= items['food'][1] * choice
+                buy_else()
 
             else:
                 print("You cannot afford that item.")
                 input()
+                buy_else()
 
         elif player['gold'] >= items[choice][1]:
             player['gold'] -= items[choice][1]
             loot(choice)
+            input()
+            buy_else()
 
         else:
             print("You cannot afford that item.")
             input()
+            buy_else()
 
     elif choice == 'n/a':
         return
@@ -421,6 +450,16 @@ def buy():
     else:
         print("I didn't quite get that.")
         buy()
+
+def buy_else():
+    print("Do you want to buy something else?")
+    choice = input("> ")
+
+    if choice == 'yes':
+        buy()
+
+    else:
+        return
 
 def sell():
     global player
@@ -445,7 +484,7 @@ def sell():
             sell()
 
     else:
-        print(f"I will give you {items[player['bag'][0]][0]} gold for {player['bag'][0]} or {items[player['bag'][1]][0]} gold for {player['bag'][1]}. Tell me what you want to sell, or say neither.")
+        print(f"I will give you {items[player['bag'][0]][0]} gold for {player['bag'][0]} or {items[player['bag'][1]][0]} gold for {player['bag'][1]}. Tell me what you want to sell, say both, or say neither.")
         choice = input('> ')
 
         if choice == player['bag'][0]:
@@ -455,6 +494,12 @@ def sell():
         elif choice == player['bag'][1]:
             player['gold'] += items[player['bag'][1]][0]
             player['bag'].remove(player['bag'][1])
+
+        elif 'both' in choice or 'and' in choice:
+            player['gold'] += items[player['bag'][0]][0]
+            player['bag'].remove(player['bag'][0])
+            player['gold'] += items[player['bag'][0]][0]
+            player['bag'].remove(player['bag'][0])
 
         elif choice == "neither":
             pass
@@ -468,6 +513,7 @@ def eat_food():
 
     if player['food'] == 0 or player['life_points'] == 100:
         print("You either have full health or no food!")
+        input()
 
     else:
         print(f"""How many pieces of bread would you like to eat? \nRecall that one piece restores 10 life points, and you have {player['life_points']} life points and {player['food']} piece(s) of bread.""")
@@ -515,6 +561,8 @@ def change_gear(item = None):
         else:
             print("I didn't quite get that.")
             change_gear(item)
+            return
+
 
 
     if len(player['bag']) == 1:
@@ -615,6 +663,7 @@ def loot(item):
 
     print(f"Congratulations! You have received {item}!")
     print("You can now change your gear around and throw things away until you only have two items in your backpack.")
+    input()
 
     player['bag'].append(item)
     change_gear(item)
