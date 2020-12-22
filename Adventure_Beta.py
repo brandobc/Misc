@@ -2,7 +2,7 @@
 Author: Brandon James Curl
 Contact: brandoncurl@utexas.edu
 Date: 20-Dec-2020
-Version: 3.1
+Version: 3.2
 """
 
 from sys import exit
@@ -303,11 +303,13 @@ def prison():
                 print("I did not understand what you typed, so this encounter has been reset.")
                 player['life_points'] = reset
                 input()
+                return
 
         else:
             print("I did not understand what you typed, so this encounter has been reset.")
             player['life_points'] = reset
             input()
+            return
 
         gone_to_prision = True
 
