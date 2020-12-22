@@ -2,7 +2,7 @@
 Author: Brandon James Curl
 Contact: brandoncurl@utexas.edu
 Date: 20-Dec-2020
-Version: 3.0
+Version: 3.1
 """
 
 from sys import exit
