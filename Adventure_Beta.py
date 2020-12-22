@@ -187,7 +187,7 @@ def woods():
     print("As you wander through the dark woods, you hear a howl in the distance. Do you want to fight the wolf or scavenge around for supplies?")
     choice = input('> ')
 
-    if 'fight' in choice:
+    if 'fight' in choice or 'wolf' in choice:
         wolf = {'name': 'wolf', 'item_level': 7, 'life_points': 50, 'gold_loot': 25, 'loot': [], 'difficulty': 6.7, 'death statement': "The wolf overpowers you and rips off chunks of flesh. You succumb to your injuries."}
         if fight(wolf):
             beat(wolf)
@@ -200,7 +200,7 @@ def woods():
                     player['gold'] = 0
 
 
-    elif 'scav' in choice:
+    elif 'scav' in choice or 'supp' in choice:
         loot('stick')
         gold_loot = randint(0, 5)
         print(f"You have also found {gold_loot} gold in the woods!")
@@ -217,7 +217,7 @@ def cave():
     choice = input('> ')
     reset = player['life_points']
 
-    if 'fight' in choice:
+    if 'fight' in choice or 'spider' in choice:
         spider = {'name': 'spider', 'item_level': 15, 'life_points': 65, 'gold_loot': 10, 'loot': ['shovel'], 'difficulty': 18, 'death statement': "The spider injects its venom in you, and your heart stops."}
         if fight(spider):
             print("Would you like to loot the body of the spider and run or smash the spider's eggs?")
@@ -367,6 +367,8 @@ def dungeon():
                     input()
                     loot('Ashbringer')
                     print("Ashbringer is the most powerful weapon to have even been created.\nThis sword was forged long ago by acient dwarfs deep in the heart of Ironforge Mountain.\nWield it with care, for none who face you truly stand a chance.")
+                    input()
+
                 else:
                     print('You crack the egg open, but nothing is inside! Better luck next time.')
                     input()
@@ -396,7 +398,7 @@ def king():
         exit(0)
 
     elif 'fight' in choice:
-        king = {'name': 'King Varian', 'item_level': 150, 'life_points': 100, 'gold_loot': 1000000, 'loot': ['diamond'], 'difficulty': 112, 'death statement': "The King is truly the greatest warrior in the land, even besting you. There is only one weapon capable of killing King Varian, but you did not have it."}
+        king = {'name': 'King Varian', 'item_level': 150, 'life_points': 100, 'gold_loot': 1000000, 'loot': ['diamond'], 'difficulty': 112, 'death statement': "The King is truly the greatest warrior in the land, even besting you. There is only one weapon capable of killing King Varian, but you either did not have it or were not at maximum health."}
         if fight(king):
             beat(king)
             print("You have won the game with highest honors. Congratulations!")
@@ -751,7 +753,8 @@ You are in the village of Goldshire, where bad things have been happening.
 We need you to help save our village and serve our king, but you must be careful.
 You are rather inexperienced and poor. Complete conquests to earn gold, which you can
 use to buy food and gear from the merchant. Protect your health, which can be regenerated with food.
-NEVER let your health get to 0, or you die! Good luck, {player['name']}, and may the Light bless you!
+NEVER let your health get to 0, or you die! I advise you to ALWAYS eat to 100 health!
+Good luck, {player['name']}, and may the Light bless you!
 """)
 
 play()
