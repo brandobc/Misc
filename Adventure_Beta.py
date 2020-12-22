@@ -5,13 +5,12 @@ Date: 20-Dec-2020
 Version: 2.0
 """
 
-
 from sys import exit
 from math import ceil
 from random import randint
 
 items = {
-"glock": [1000, 0, 100],
+"Ashbringer": [1000, 0, 100],
 "sword": [220, 300, 30],
 "axe": [120, 200, 20],
 "shovel": [20, 100, 10],
@@ -27,7 +26,7 @@ items = {
 "golden egg": [500, 0, 0]
 }
 
-weapon_types = ['glock', 'sword', 'axe', 'shovel', 'stick', 'fists']
+weapon_types = ['Ashbringer', 'sword', 'axe', 'shovel', 'stick', 'fists']
 
 armour_types = ['leather', 'bronze', 'silver', 'gold', 'platinum', 'diamond']
 
@@ -42,6 +41,8 @@ player = {
 }
 
 first_drink = True
+wolf_count = 0
+gone_to_prision = False
 
 def report():
     print(f"""
@@ -182,6 +183,7 @@ def lose(creature):
 
 def woods():
     global player
+    global wolf_count
     print("As you wander through the dark woods, you hear a howl in the distance. Do you want to fight the wolf or scavenge around for supplies?")
     choice = input('> ')
 
@@ -189,12 +191,20 @@ def woods():
         wolf = {'name': 'wolf', 'item_level': 7, 'life_points': 50, 'gold_loot': 25, 'loot': [], 'difficulty': 6.7, 'death statement': "The wolf overpowers you and rips off chunks of flesh. You succumb to your injuries."}
         if fight(wolf):
             beat(wolf)
+            wolf_count += 1
+
+            if wolf_count >= 3:
+                if randint(0,4) == 0:
+                    print("As you leave the woods to return home, a gang of bandits robs you and steals all of your gold!")
+                    input()
+                    player['gold'] = 0
 
 
     elif 'scav' in choice:
         loot('stick')
         gold_loot = randint(0, 5)
         print(f"You have also found {gold_loot} gold in the woods!")
+        input()
         player['gold'] += gold_loot
 
     else:
@@ -205,6 +215,7 @@ def cave():
     global player
     print("As you creep into the cave, you feet begin to stick to the ground. Suddenly, a spider comes out of the darkness and stares at you. Do you want to fight or flee?")
     choice = input('> ')
+    reset = player['life_points']
 
     if 'fight' in choice:
         spider = {'name': 'spider', 'item_level': 15, 'life_points': 65, 'gold_loot': 10, 'loot': ['shovel'], 'difficulty': 18, 'death statement': "The spider injects its venom in you, and your heart stops."}
@@ -219,8 +230,9 @@ def cave():
                 husband()
 
             else:
-                print("By this point, you should not have problems typing an answer...")
-
+                print("I did not understand what you typed, so this encounter has been reset.")
+                player['life_points'] = reset
+                input()
 
     elif 'flee' in choice:
         print("As you run away, you sustain 5 damage.")
@@ -252,9 +264,17 @@ def husband():
 
 def prison():
     global player
+    global gone_to_prision
+
+    if gone_to_prision:
+        print("There is nothing left to do at the prison.")
+        input()
+        return
+
     print("As you walk into the prison, a gang surrounds you. The alpha of the pack smiles reavling many missing teeth, and they all start attacking you at the alpha's whistle.")
     alpha = {'name': 'alpha prisoner', 'item_level': 30, 'life_points': 70, 'gold_loot': 30, 'loot': ['axe'], 'difficulty': 28, 'death statement': "The prisoners pull out their shanks and knife you to death. You don't even want to know what they do with your corpse after..."}
     input()
+    reset = player['life_points']
 
     if fight(alpha):
         print("After beating the prisoners, you can either loot the alpha or have a look around.")
@@ -264,7 +284,7 @@ def prison():
             beat(alpha)
 
         elif 'look' in choice or 'around' in choice:
-            print("You see a prison guard taking advantage of one of the prisoners. Do you report him or extort him?")
+            print("You see a prison guard assaulting of one of the prisoners. Do you report him or extort him?")
             choice = input('> ')
 
             if 'report' in choice:
@@ -280,10 +300,16 @@ def prison():
                 loot('silver')
 
             else:
-                print("Learn how to type stuff in...")
+                print("I did not understand what you typed, so this encounter has been reset.")
+                player['life_points'] = reset
+                input()
 
         else:
-            print("Learn how to type stuff in...")
+            print("I did not understand what you typed, so this encounter has been reset.")
+            player['life_points'] = reset
+            input()
+
+        gone_to_prision = True
 
 def witch():
     global player
@@ -308,7 +334,7 @@ def witch():
             check_death("\"Ahh, I see you've come back for a second drink,\" the witch exclaims. She confidently pours the potion down your throat, and you begin hallucinating. When you come to, you are in the underworld. Apparetly, she fixed her potion.")
 
     elif 'fight' in choice:
-        witch_2 = {'name': 'witch', 'item_level': 60, 'life_points': 70, 'gold_loot': 80, 'loot': ['gold', 'sword'], 'difficulty': 40, 'death statement': "The witch reaches her hand into your chest and pulls out your beating heart. Well, at least it WAS beating."}
+        witch_2 = {'name': 'witch', 'item_level': 50, 'life_points': 70, 'gold_loot': 80, 'loot': ['gold', 'sword'], 'difficulty': 40, 'death statement': "The witch reaches her hand into your chest and pulls out your beating heart. Well, at least it WAS beating."}
         if fight(witch_2):
             beat(witch_2)
 
@@ -321,6 +347,7 @@ def dungeon():
     print("As you creep into the dungeon, you get lost in its maze. Everntually, you wander into a room with an exit. As you go to leave, a dragon flies down from its nest and breathes fire around you. You begin to fight.")
     dragon = {'name': 'dragon', 'item_level': 70, 'life_points': 80, 'gold_loot': 50, 'loot': ['platinum'], 'difficulty': 54, 'death statement': "The dragon cooks you to a crisp and swallows you whole."}
     input()
+    reset = player['life_points']
 
     if fight(dragon):
         print("After beating the dragon, you can either loot it or wipe off one of the nearby dusty eggs.")
@@ -334,11 +361,12 @@ def dungeon():
             choice = input('> ')
 
             if 'crack' in choice or 'open' in choice:
-                rand = randint(0, 4)
+                rand = randint(0, 3)
                 if rand == 0:
                     print("You crack open the golden egg, and something mystical is inside...")
                     input()
-                    loot('glock')
+                    loot('Ashbringer')
+                    print("Ashbringer is the most powerful weapon to have even been created.\nThis sword was forged long ago by acient dwarfs deep in the heart of Ironforge Mountain.\nWield it with care, for none who face you truly stand a chance.")
                 else:
                     print('You crack the egg open, but nothing is inside! Better luck next time.')
                     input()
@@ -347,10 +375,14 @@ def dungeon():
                 loot('golden egg')
 
             else:
-                print("Learn how to type stuff in...")
+                print("I did not understand what you typed, so this encounter has been reset.")
+                player['life_points'] = reset
+                input()
 
         else:
-            print("Learn how to type stuff in...")
+            print("I did not understand what you typed, so this encounter has been reset.")
+            player['life_points'] = reset
+            input()
 
 def king():
     global player
@@ -397,7 +429,7 @@ def merchant():
 def buy():
     global player
     print(f"""
-    What would you like to purchase? (type only one item; n/a if you change your mind)
+    What would you like to purchase? (type only one item; nevermind if you change your mind)
     WEAPONS
     \tstick\t\t{items['stick'][1]} gold\t\t{items['stick'][2]} IL
     \tshovel\t\t{items['shovel'][1]} gold\t{items['shovel'][2]} IL
@@ -412,6 +444,9 @@ def buy():
 
     OTHER
     \tfood\t\t{items['food'][1]} gold\t\tRestores {items['food'][2]} HP
+
+
+    You have {player['gold']} gold remaining.
     """)
 
     choice = input('> ')
@@ -444,7 +479,7 @@ def buy():
             input()
             buy_else()
 
-    elif choice == 'n/a':
+    elif 'never' in choice:
         return
 
     else:
@@ -611,7 +646,7 @@ def change_gear(item = None):
             change_gear()
 
     else:
-        print("You have no gear in your bag to equip! **cough** broke bitch **couch**")
+        print("You have no gear in your bag to equip! **cough** ya broke **couch**")
         input()
 
     try:
@@ -697,12 +732,12 @@ def whole_number(choice):
             return choice_int
 
         else:
-            print("Enter a positive whole number, dumbass.")
+            print("Enter a positive whole number, please.")
             input()
             play()
 
     except:
-        print("Enter a whole number, dumbass.")
+        print("Enter a whole number, please.")
         input()
         play()
 
